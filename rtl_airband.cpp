@@ -127,6 +127,7 @@ struct icecast_data {
 	const char *mountpoint;
 	const char *name;
 	const char *genre;
+        const char *description;
 	bool send_scan_freq_tags;
 	shout_t *shout;
 };
@@ -348,6 +349,9 @@ void shout_setup(icecast_data *icecast) {
 		shout_free(shouttemp); return;
 	}
 	if(icecast->genre && shout_set_genre(shouttemp, icecast->genre) != SHOUTERR_SUCCESS) {
+		shout_free(shouttemp); return;
+	}
+	if(icecast->description && shout_set_description(shouttemp, icecast->description) != SHOUTERR_SUCCESS) {
 		shout_free(shouttemp); return;
 	}
 	char samplerates[20];
@@ -1403,6 +1407,8 @@ int main(int argc, char* argv[]) {
 							idata->name = strdup(devs[i]["channels"][j]["outputs"][o]["name"]);
 						if(devs[i]["channels"][j]["outputs"][o].exists("genre"))
 							idata->genre = strdup(devs[i]["channels"][j]["outputs"][o]["genre"]);
+						if(devs[i]["channels"][j]["outputs"][o].exists("description"))
+							idata->description = strdup(devs[i]["channels"][j]["outputs"][o]["description"]);
 						if(devs[i]["channels"][j]["outputs"][o].exists("send_scan_freq_tags"))
 							idata->send_scan_freq_tags = (bool)devs[i]["channels"][j]["outputs"][o]["send_scan_freq_tags"];
 						else
